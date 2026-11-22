@@ -1,0 +1,222 @@
+body {
+    margin: 0;
+    text-align: center;
+    background-color: #fefae0;
+}
+.nav {
+    background-color: #fefae0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-sizing: border-box;
+    overflow-x: auto;
+    margin: 50px 50px;
+    border-radius: 60px;
+    box-shadow: 2px 2px 20px black;
+}
+.mobileN {
+    display: none;
+}
+.title {
+    font-size: 50px;
+    font-family: Cal Sans, ui-sans-serif, system-ui, sans-serif;
+    text-align: left;
+    margin: 20px 100px 20px 20px;
+    color: #212529;
+    white-space: nowrap;
+}
+.navbtn {
+    background-color: #fefae0;
+    padding: 10px 24px;
+    border-top: none;
+    border-bottom: none;
+    border-left: none;
+    border-right: 1px solid black;
+    color: #fb5607;
+    font-size: 20px;
+    width: fit-content;
+    margin: 0;
+    flex: 0 0 auto;
+    white-space: nowrap;
+    font-family: Cal Sans, ui-sans-serif, system-ui, sans-serif;
+    
+}
+.mobileNav{
+    display: none;
+}
+.header{
+    background-color: #fb5607;
+    width: 100%;
+    margin: 0;
+    display: flow-root;
+}
+h1 {
+    color: #212529;
+    font-family: Cal Sans, ui-sans-serif, system-ui, sans-serif;
+    font-size: 60px;
+}
+.why {
+    color: #212529;
+    font-size: 40px;
+    flex: 0 0 100%;
+}
+.whyItemTittle, .jbh1{
+    text-align: left;
+    color: black;
+    font-size: 30px solid;
+}
+.about{
+    padding: 0 40px;
+}
+.whyItemDescription, .jb{
+    color: grey;
+}
+
+p {
+    font-family: Cal Sans, ui-sans-serif, system-ui, sans-serif;
+    color: #fefae0;
+    font-size: 20px;
+}
+
+.why-choose-us, .jbc, .WWD{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding-bottom: 20px;
+}
+.wwd {
+    width: 40%;
+    background-color: grey;
+    text-align: left;
+    padding: 8px;
+    border-radius: 20px;
+    color: #212529;
+}
+.wwdh{
+    color: black;
+    font-size: 40px;
+    padding: 0 20px;
+    margin: 0;
+}
+.wwdb1, .wwdb {
+    padding: 0 20px;
+}
+.why-item, .jbdiv{
+    width: 20%;
+    box-shadow: 2px 2px 20px grey;
+    border-radius: 20px;
+    text-align: left;
+    padding: 10px;
+    background-color: white;
+}
+.aboutdiv{
+    width: 90%;
+    box-shadow: 2px 2px 20px grey;
+    border-radius: 20px;
+    border-radius: 20px;
+    margin: auto;
+    padding: 20px 0;
+    text-align: left;
+    background-color: white;
+}
+.about{
+    color: gray;
+}
+.jbbtn{
+        background-color: #fb5607;
+        border: none;
+        width: 50%;
+        border-radius: 15px;
+        color: black;
+        font-size: 20px;
+        font-family: Cal Sans, ui-sans-serif, system-ui, sans-serif;
+        box-shadow: 2px 2px 20px grey;
+        margin: 20px auto 20px auto;
+        box-sizing: border-box;
+        text-align: center;
+}
+.footer{
+    background-color: #212529;
+    margin: 0;
+    padding: 20px;
+}
+@media (max-width:500px){
+      .mobileNav {
+        display: block;
+        margin-right: 3vw;
+      }
+      .navbtn {
+        display: none;
+      }
+      .mobileN{
+         background-color: #fefae0;
+         display: none;
+         flex-direction: column;
+         align-items: left;
+         width: 50%;
+         box-sizing: border-box;
+         overflow-x: auto;
+         margin: 3vw 3vw;
+         border-radius: 20px;
+         position: fixed;
+         top: 0;
+         right: 0;
+         z-index: 1000;
+      }
+      .navbtnM{
+         background-color: #fefae0;
+         padding: 10px 24px;
+         border-top: none;
+         border-bottom: none;
+         border-left: none;
+         border-right: none;
+         color: #fb5607;
+         font-size: 20px;
+         width: fit-content;
+         margin: 0;
+         flex: 0 0 auto;
+         white-space: nowrap;
+         font-family: Cal Sans, ui-sans-serif, system-ui, sans-serif;   
+      }
+      .nav {
+        width: 95%;
+        border-radius: 60px;
+        justify-content: space-between;
+        margin: 3vw;
+        padding: 1vw 0;
+        text-align: left;
+      }
+      .title {
+        font-size: 8vw;
+        padding-right: 40vw;
+        margin: 0;
+      }
+      h1 {
+        font-size: 8vw;
+      }
+      .why{
+        font-size: 8vw;
+      }
+      .why-choose-us, .jbc, .WWD{
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 16px;
+        margin: 4vw;
+        padding: 0;
+      }
+      .why {
+        flex: 0 0 auto;
+        width: 100%;
+      }
+      .why-item, .jbdiv {
+        width: 100%;
+        margin: 0;
+        box-sizing: border-box;
+      }
+      .wwd {
+        width: 100%;
+        margin: 0;
+        box-sizing: border-box;
+      }
+}

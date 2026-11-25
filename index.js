@@ -35,17 +35,24 @@ blogBtn.addEventListener("click", function(){
 
 
 
-remoteBtn.addEventListener("click", function(){
-    window.location.href = "remote.html"
-})
-onsiteBtn.addEventListener("click", function(){
-    window.location.href = "onsite.html"
-})
-hybrideBtn.addEventListener("click", function(){
-    window.location.href = "hybride.html"
-})
-intershipBtn.addEventListener("click", function(){
-    window.location.href = "internships.html"
-})
-
+if (remoteBtn) {
+    remoteBtn.addEventListener("click", function(){
+        window.location.href = "remote.html"
+    })
+}
+if (onsiteBtn) {
+    onsiteBtn.addEventListener("click", function(){
+        window.location.href = "onsite.html"
+    })
+}
+if (hybrideBtn) {
+    hybrideBtn.addEventListener("click", function(){
+        window.location.href = "hybride.html"
+    })
+}
+if (intershipBtn) {
+    intershipBtn.addEventListener("click", function(){
+        window.location.href = "internships.html"
+    })
+}
 

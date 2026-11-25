@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="stylesheet" href="styles.css">
+    <title>Manage jobs | Connect</title>
+</head>
+<body>
+    <main class="admin-page">
+        <a class="admin-back" href="jobs.html">← View public jobs</a>
+        <h1>Manage job listings</h1>
+        <p class="admin-intro">Add and manage jobs without editing code. Listings are saved in this browser only and are not uploaded to a shared website or visible to other visitors.</p>
+        <p id="adminStatus" class="jobs-status" role="status"></p>
+
+        <section id="manager">
+            <div class="admin-toolbar">
+                <h2>Job listings</h2>
+            </div>
+            <form id="jobForm" class="admin-panel">
+                <h2 id="formHeading">Add a job</h2>
+                <input id="jobId" type="hidden">
+                <label>Job title
+                    <input id="jobTitle" type="text" maxlength="160" required>
+                </label>
+                <label>Company
+                    <input id="jobCompany" type="text" maxlength="160" required>
+                </label>
+                <label>Location
+                    <input id="jobLocation" type="text" maxlength="160" required>
+                </label>
+                <label>Work type
+                    <select id="jobWorkType" required>
+                        <option value="Remote">Remote</option>
+                        <option value="Hybrid">Hybrid</option>
+                        <option value="Onsite">Onsite</option>
+                        <option value="Internship">Internship</option>
+                        <option value="Contract">Contract</option>
+                    </select>
+                </label>
+                <label>Description
+                    <textarea id="jobDescription" rows="6" maxlength="5000" required></textarea>
+                </label>
+                <label>Application link (optional)
+                    <input id="jobApplyUrl" type="url" placeholder="https://example.com/apply">
+                </label>
+                <label class="admin-checkbox">
+                    <input id="jobPublished" type="checkbox">
+                    Show this job on the jobs page in this browser
+                </label>
+                <div class="admin-form-actions">
+                    <button class="admin-button" type="submit">Save job</button>
+                    <button id="cancelEdit" class="admin-button admin-button-secondary" type="button" hidden>Cancel edit</button>
+                </div>
+            </form>
+            <div id="adminJobs" class="admin-job-list" aria-live="polite"></div>
+        </section>
+    </main>
+
+    <script src="admin.js"></script>
+</body>
+</html>

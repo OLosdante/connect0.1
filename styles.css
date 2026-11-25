@@ -18,12 +18,12 @@ body {
     border-radius: 60px;
     box-shadow: 2px 2px 20px black;
 }
-.mobileN {
+.mobileN, .admin {
     display: none;
 }
 .title {
     font-size: 50px;
-    font-family: Cal Sans, ui-sans-serif, system-ui, sans-serif;
+    font-family: Agbalumo, sans-serif;
     text-align: left;
     margin: 20px 100px 20px 20px;
     color: #212529;
@@ -416,6 +416,19 @@ p {
 .blog-more[open] summary {
     margin-bottom: 12px;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 @media (max-width:500px){
       .mobileNav {
         display: block;
@@ -459,8 +472,18 @@ p {
         border-radius: 60px;
         justify-content: space-between;
         margin: 3vw;
-        padding: 1vw 0;
+        padding: 5vw 0;
         text-align: left;
+      }
+      .mobileNav{
+        background-color: #fb5607;
+        border: none;
+        border-radius: 1vw;
+        color: white;
+        font-size: 5vw;
+      }
+      .header{
+        background-color: #fefae0;
       }
       .title {
         font-size: 8vw;
@@ -469,6 +492,12 @@ p {
       }
       h1 {
         font-size: 8vw;
+      }
+      .description {
+        color: #212529;
+      }
+      .h_one{
+        padding: 4vw;
       }
       .why{
         font-size: 8vw;

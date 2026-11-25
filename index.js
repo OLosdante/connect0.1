@@ -14,9 +14,18 @@ let intershipBtn = document.getElementById("contbtni")
 let mobileNav = document.getElementById("mobilenav")
 let mobile = document.getElementById("mobileN")
 
+let mobilehome = document.getElementById("homebtnM")
+let mobilejob = document.getElementById("jobbtnM")
+let mobileabout = document.getElementById("aboutbtnM")
+let mobileblog = document.getElementById("blogbtnM")
+
+let admin = document.getElementById("adminbtn")
+
+
 
 mobileNav.addEventListener("click", function(){
     mobile.style.display = "flex"
+    admin.style.display = "flex"
 })
 
 
@@ -32,6 +41,28 @@ jobBtn.addEventListener("click", function(){
 blogBtn.addEventListener("click", function(){
     window.location.href = "blogs.html"
 })
+
+
+
+
+mobilehome.addEventListener("click", function(){
+    window.location.href = "index.html";
+})
+mobileabout.addEventListener("click",function(){
+    window.location.href = "aboutus.html";
+})
+mobilejob.addEventListener("click", function(){
+    window.location.href = "jobs.html"
+})
+mobileblog.addEventListener("click", function(){
+    window.location.href = "blogs.html"
+})
+
+
+admin.addEventListener("click", function(){
+    window.location.href = "admin.html"
+})
+
 
 
 

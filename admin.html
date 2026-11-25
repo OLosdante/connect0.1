@@ -11,12 +11,21 @@
     <main class="admin-page">
         <a class="admin-back" href="jobs.html">← View public jobs</a>
         <h1>Manage job listings</h1>
-        <p class="admin-intro">Add and manage jobs without editing code. Listings are saved in this browser only and are not uploaded to a shared website or visible to other visitors.</p>
+        <p class="admin-intro">Sign in to manage listings shared with visitors on every browser and device.</p>
         <p id="adminStatus" class="jobs-status" role="status"></p>
 
-        <section id="manager">
+        <form id="adminLogin" class="admin-panel">
+            <h2>Administrator sign in</h2>
+            <label>Password
+                <input id="adminPassword" type="password" autocomplete="current-password" required>
+            </label>
+            <button class="admin-button" type="submit">Sign in</button>
+        </form>
+
+        <section id="manager" hidden>
             <div class="admin-toolbar">
                 <h2>Job listings</h2>
+                <button id="adminSignOut" class="admin-button admin-button-secondary" type="button" hidden>Sign out</button>
             </div>
             <form id="jobForm" class="admin-panel">
                 <h2 id="formHeading">Add a job</h2>
@@ -47,7 +56,7 @@
                 </label>
                 <label class="admin-checkbox">
                     <input id="jobPublished" type="checkbox">
-                    Show this job on the jobs page in this browser
+                    Publish this job on the public jobs page
                 </label>
                 <div class="admin-form-actions">
                     <button class="admin-button" type="submit">Save job</button>

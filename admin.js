@@ -1,9 +1,11 @@
 (() => {
-    const storageKey = "connect.jobs.v1";
     const status = document.getElementById("adminStatus");
+    const loginForm = document.getElementById("adminLogin");
+    const manager = document.getElementById("manager");
     const jobForm = document.getElementById("jobForm");
     const jobsList = document.getElementById("adminJobs");
     const cancelEdit = document.getElementById("cancelEdit");
+    const signOutButton = document.getElementById("adminSignOut");
     const fields = {
         id: document.getElementById("jobId"),
         title: document.getElementById("jobTitle"),
@@ -14,24 +16,10 @@
         applyUrl: document.getElementById("jobApplyUrl"),
         published: document.getElementById("jobPublished")
     };
+    let jobs = [];
 
     function setStatus(message) {
         status.textContent = message;
-    }
-
-    function readJobs() {
-        const stored = window.localStorage.getItem(storageKey);
-        if (stored === null) return [];
-
-        const jobs = JSON.parse(stored);
-        if (!Array.isArray(jobs)) {
-            throw new Error("Saved job data is not a list. Clear the saved browser data before adding jobs.");
-        }
-        return jobs;
-    }
-
-    function saveJobs(jobs) {
-        window.localStorage.setItem(storageKey, JSON.stringify(jobs));
     }
 
     function addText(parent, tag, className, text) {
@@ -40,6 +28,38 @@
         element.textContent = text;
         parent.append(element);
         return element;
+    }
+
+    async function requestApi(body) {
+        const response = await fetch("/api/jobs", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+        });
+        const result = await response.json().catch(() => ({
+            error: "Netlify returned a non-JSON response. Check that the functions are deployed and /api/jobs is routed correctly."
+        }));
+        if (!response.ok) throw new Error(result.error || `Request failed (${response.status}).`);
+        return result;
+    }
+
+    async function loadJobs() {
+        const response = await fetch("/api/jobs?admin=1");
+        const result = await response.json().catch(() => ({
+            error: "Netlify returned a non-JSON response. Check that the functions are deployed and /api/jobs is routed correctly."
+        }));
+        if (!response.ok) throw new Error(result.error || `Request failed (${response.status}).`);
+        jobs = result.jobs;
+        renderJobs();
+    }
+
+    function showSignedOut(message) {
+        jobs = [];
+        jobsList.replaceChildren();
+        manager.hidden = true;
+        loginForm.hidden = false;
+        signOutButton.hidden = true;
+        setStatus(message);
     }
 
     function resetForm() {
@@ -65,7 +85,6 @@
     }
 
     function renderJobs() {
-        const jobs = readJobs().sort((first, second) => second.created_at - first.created_at);
         jobsList.replaceChildren();
         if (!jobs.length) {
             addText(jobsList, "p", "jobs-status", "No listings yet. Use the form above to add one.");
@@ -76,7 +95,7 @@
             card.className = "admin-job";
             addText(card, "h3", "", job.title);
             addText(card, "p", "", `${job.company} · ${job.location} · ${job.work_type}`);
-            addText(card, "span", job.published ? "admin-published" : "admin-draft", job.published ? "Shown on this browser's jobs page" : "Draft");
+            addText(card, "span", job.published ? "admin-published" : "admin-draft", job.published ? "Published" : "Draft");
 
             const actions = document.createElement("div");
             actions.className = "admin-form-actions";
@@ -91,67 +110,92 @@
             card.append(actions);
             jobsList.append(card);
         }
-        setStatus(`${jobs.length} ${jobs.length === 1 ? "listing" : "listings"} saved in this browser.`);
+        setStatus(`${jobs.length} ${jobs.length === 1 ? "listing" : "listings"} loaded from Netlify storage.`);
     }
 
-    jobForm.addEventListener("submit", (event) => {
+    loginForm.addEventListener("submit", async (event) => {
         event.preventDefault();
-        setStatus("Saving job in this browser…");
+        setStatus("Signing in…");
+        const passwordInput = document.getElementById("adminPassword");
+        try {
+            await requestApi({
+                action: "login",
+                password: passwordInput.value
+            });
+            passwordInput.value = "";
+            loginForm.hidden = true;
+            manager.hidden = false;
+            signOutButton.hidden = false;
+            await loadJobs();
+        } catch (error) {
+            passwordInput.value = "";
+            showSignedOut(`Could not sign in: ${error.message}`);
+        }
+    });
+
+    signOutButton.addEventListener("click", async () => {
+        try {
+            await requestApi({ action: "logout" });
+            showSignedOut("Signed out.");
+        } catch (error) {
+            setStatus(`Could not sign out: ${error.message}`);
+        }
+    });
+
+    jobForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        setStatus("Saving job…");
+        const job = {
+            id: fields.id.value || undefined,
+            title: fields.title.value.trim(),
+            company: fields.company.value.trim(),
+            location: fields.location.value.trim(),
+            work_type: fields.workType.value,
+            description: fields.description.value.trim(),
+            apply_url: fields.applyUrl.value.trim() || null,
+            published: fields.published.checked
+        };
 
         try {
-            const jobs = readJobs();
-            const existingIndex = jobs.findIndex((savedJob) => savedJob.id === fields.id.value);
-            const existingJob = existingIndex === -1 ? null : jobs[existingIndex];
-            const job = {
-                id: existingJob ? existingJob.id : `${Date.now()}-${Math.random().toString(36).slice(2)}`,
-                title: fields.title.value.trim(),
-                company: fields.company.value.trim(),
-                location: fields.location.value.trim(),
-                work_type: fields.workType.value,
-                description: fields.description.value.trim(),
-                apply_url: fields.applyUrl.value.trim() || null,
-                published: fields.published.checked,
-                created_at: existingJob ? existingJob.created_at : Date.now()
-            };
-            if (existingIndex === -1) {
-                jobs.push(job);
-            } else {
-                jobs[existingIndex] = job;
-            }
-            saveJobs(jobs);
+            await requestApi({ action: fields.id.value ? "update" : "create", job });
             resetForm();
-            renderJobs();
+            await loadJobs();
         } catch (error) {
             setStatus(`Could not save job: ${error.message}`);
         }
     });
 
-    jobsList.addEventListener("click", (event) => {
+    jobsList.addEventListener("click", async (event) => {
         const button = event.target.closest("button[data-action]");
         if (!button) return;
 
+        const job = jobs.find((savedJob) => savedJob.id === button.dataset.id);
+        if (button.dataset.action === "edit" && job) {
+            beginEdit(job);
+            return;
+        }
+        if (button.dataset.action !== "delete" || !job || !window.confirm("Delete this job listing?")) return;
+
+        setStatus("Deleting job…");
         try {
-            const jobs = readJobs();
-            const job = jobs.find((savedJob) => savedJob.id === button.dataset.id);
-            if (button.dataset.action === "edit" && job) {
-                beginEdit(job);
-                return;
-            }
-            if (button.dataset.action === "delete" && job && window.confirm("Delete this job listing?")) {
-                saveJobs(jobs.filter((savedJob) => savedJob.id !== job.id));
-                setStatus("Job deleted from this browser.");
-                renderJobs();
-            }
+            await requestApi({ action: "delete", id: job.id });
+            await loadJobs();
         } catch (error) {
-            setStatus(`Could not update listings: ${error.message}`);
+            setStatus(`Could not delete job: ${error.message}`);
         }
     });
 
     cancelEdit.addEventListener("click", resetForm);
 
-    try {
-        renderJobs();
-    } catch (error) {
-        setStatus(`Could not load saved jobs: ${error.message}`);
-    }
+    loadJobs().then(() => {
+        loginForm.hidden = true;
+        manager.hidden = false;
+        signOutButton.hidden = false;
+    }).catch((error) => {
+        if (error.message.includes("401")) {
+            showSignedOut("Sign in with the administrator password to manage listings.");
+        } else {
+            showSignedOut(`Could not connect to Netlify storage: ${error.message}`);
+        }
+    });
 })();

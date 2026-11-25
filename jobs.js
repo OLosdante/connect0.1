@@ -1,11 +1,11 @@
 (() => {
-    const storageKey = "connect.jobs.v1";
     const status = document.getElementById("jobsStatus");
     const listings = document.getElementById("jobListings");
     const search = document.getElementById("jobSearch");
     const typeFilter = document.getElementById("jobType");
     const mobileNavButton = document.getElementById("mobilenav");
     const mobileNav = document.getElementById("mobileN");
+    let jobs = [];
 
     mobileNavButton.addEventListener("click", () => {
         const isOpen = mobileNav.style.display === "flex";
@@ -21,25 +21,6 @@
         return element;
     }
 
-    function loadJobs() {
-        const stored = window.localStorage.getItem(storageKey);
-        if (stored === null) return [];
-
-        const jobs = JSON.parse(stored);
-        if (!Array.isArray(jobs)) {
-            throw new Error("Saved job data is not a list. Contact the site administrator.");
-        }
-        return jobs.filter((job) => job && job.published);
-    }
-
-    let jobs;
-    try {
-        jobs = loadJobs();
-    } catch (error) {
-        status.textContent = `Could not load jobs: ${error.message}`;
-        return;
-    }
-
     function renderJobs() {
         const query = search.value.trim().toLowerCase();
         const selectedType = typeFilter.value;
@@ -51,12 +32,12 @@
         listings.replaceChildren();
         if (!matches.length) {
             status.textContent = jobs.length
-                ? "No jobs match your search. Listings are stored in this browser only."
-                : "There are no current openings. Add jobs from Manage jobs; listings are stored in this browser only.";
+                ? "No jobs match your search."
+                : "There are no current openings.";
             return;
         }
 
-        status.textContent = `${matches.length} ${matches.length === 1 ? "job" : "jobs"} available in this browser only`;
+        status.textContent = `${matches.length} ${matches.length === 1 ? "job" : "jobs"} available`;
         for (const job of matches) {
             const card = document.createElement("article");
             card.className = "job-card";
@@ -88,7 +69,22 @@
         }
     }
 
+    async function loadJobs() {
+        status.textContent = "Loading jobs…";
+        try {
+            const response = await fetch("/api/jobs");
+            const result = await response.json().catch(() => ({
+                error: "Netlify returned a non-JSON response. Check that the functions are deployed and /api/jobs is routed correctly."
+            }));
+            if (!response.ok) throw new Error(result.error || `Request failed (${response.status}).`);
+            jobs = result.jobs;
+            renderJobs();
+        } catch (error) {
+            status.textContent = `Could not load jobs: ${error.message}`;
+        }
+    }
+
     search.addEventListener("input", renderJobs);
     typeFilter.addEventListener("change", renderJobs);
-    renderJobs();
+    loadJobs();
 })();
